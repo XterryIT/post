@@ -1,5 +1,6 @@
 services:
   web:
+    container_name: django_web
     build: .
     command: python /code/manage.py runserver 0.0.0.0:8000
     volumes:
@@ -8,7 +9,9 @@ services:
       - 8000:8000
     depends_on:
       - db
+  
   db:
+    container_name: db_postgres
     image: postgres:14
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -18,7 +21,9 @@ services:
        POSTGRES_DB: post_postgres
     ports:
       - 5432:5432
-    
+
 
 volumes:
   postgres_data:
+
+

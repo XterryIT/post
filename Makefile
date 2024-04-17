@@ -1,7 +1,7 @@
 server:
-	docker compose up
+	docker compose build
 
 up:
-	docker-compose up --force-recreate
+	docker-compose up 
 
 .PHONY: up server
