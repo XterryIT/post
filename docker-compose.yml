@@ -21,8 +21,7 @@ services:
        POSTGRES_DB: post_postgres
     ports:
       - 5432:5432
-
-
+      
 volumes:
   postgres_data:
 
