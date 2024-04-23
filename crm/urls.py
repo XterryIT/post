@@ -5,9 +5,8 @@ from . import views
 from django.urls import re_path
 
 urlpatterns = [
-    re_path('login', views.login),
-    re_path('register', views.register),
-    re_path('test_token', views.test_token),
+    path('api/login', views.UserApiView.as_view()),
+
 ]
 
 

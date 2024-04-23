@@ -6,4 +6,4 @@ up:
 	docker compose build
 	docker compose up 
 
-.PHONY: up server migrate
+.PHONY: up migrate
