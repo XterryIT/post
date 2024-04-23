@@ -2,16 +2,12 @@ from django.urls import path
 
 from . import views
 
+from django.urls import re_path
+
 urlpatterns = [
-    
-    path('', views.homepage, name=""),
-
-    path('register', views.register, name="register"),
-
-    path('login', views.login, name="login"),
-
-    path('dashboard', views.dashboard, name="dashboard"),
-
+    re_path('login', views.login),
+    re_path('register', views.register),
+    re_path('test_token', views.test_token),
 ]
 
 

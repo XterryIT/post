@@ -3,7 +3,8 @@ CREATE TABLE "User" (
   "first_name" VARCHAR NOT NULL,
   "last_name" VARCHAR NOT NULL,
   "phone" VARCHAR UNIQUE NOT NULL,
-  "email" VARCHAR UNIQUE NOT NULL
+  "email" VARCHAR UNIQUE NOT NULL,
+  "password" VARCHAR NOT NULL
 );
 
 CREATE TABLE "Boxpackage" (
@@ -25,12 +26,6 @@ CREATE TABLE "Package" (
   "number" INTEGER UNIQUE NOT NULL,
   "pin" INTEGER NOT NULL,
   "status" VARCHAR NOT NULL
-);
-
-CREATE TABLE "Login" (
-  "id" SERIAL PRIMARY KEY,
-  "fk_user_id" INTEGER REFERENCES "User" ("id"),
-  "password" VARCHAR NOT NULL
 );
 
 CREATE TABLE "Delivery" (

@@ -1,0 +1,24 @@
+
+POST http://127.0.0.1:8000/login
+Content-Type: application/json
+
+{"email": "root@gmail.com", "password": "root"}
+
+
+###
+
+
+POST http://127.0.0.1:8000/register
+Content-Type: application/json
+
+{"first_name": "misha", "last_name": "bahs", "phone": "+48949967871" ,"email": "misha@gmail.com", "password": "misha"}
+
+
+###
+
+
+POST http://127.0.0.1:8000/test_token
+Content-Type: application/json
+
+{}
+
