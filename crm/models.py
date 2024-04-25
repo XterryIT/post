@@ -1,11 +1,6 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
+
 from django.db import models
+
 
 
 class Boxpackage(models.Model):
@@ -37,7 +32,7 @@ class Package(models.Model):
         db_table = 'Package'
 
 
-class User(models.Model):
+class Users(models.Model):
     first_name = models.CharField()
     last_name = models.CharField()
     phone = models.CharField(unique=True)
@@ -45,7 +40,7 @@ class User(models.Model):
     password = models.CharField()
 
     class Meta:
-        db_table = 'User'
+        db_table = 'Users'
 
 
 class Delivery(models.Model):
@@ -54,7 +49,7 @@ class Delivery(models.Model):
     fk_to_container_num = models.ForeignKey(Container, models.DO_NOTHING, db_column='fk_to_container_num', to_field='number', related_name='delivery_fk_to_container_num_set', blank=True, null=True)
     fk_from_boxpackage_location = models.ForeignKey(Boxpackage, models.DO_NOTHING, db_column='fk_from_boxpackage_location', to_field='location', blank=True, null=True)
     fk_to_boxpackage_location = models.ForeignKey(Boxpackage, models.DO_NOTHING, db_column='fk_to_boxpackage_location', to_field='location', related_name='delivery_fk_to_boxpackage_location_set', blank=True, null=True)
-    fk_user = models.ForeignKey('User', models.DO_NOTHING, blank=True, null=True)
+    fk_users = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
     data_departure = models.DateTimeField()
     data_receiving = models.DateTimeField()
 

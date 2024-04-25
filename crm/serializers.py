@@ -1,27 +1,26 @@
 from rest_framework import serializers
-from .models import User
-
+from django.contrib.auth.hashers import make_password
+from .models import Users
+import jwt, datetime
 
 # new code 
 
 # Conversion lines to json format lines
-class UserSerializer(serializers.Serializer):
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    phone = serializers.CharField()
-    email = serializers.CharField()
-    password = serializers.CharField()
+class UsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ['first_name', 'last_name', 'phone', 'email', 'password']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
     def create(self, validated_data):
-        return User.objects.create(**validated_data)
+        password = validated_data.pop('password', None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.password = make_password(password)
+        instance.save()
+        return instance
 
 
 
-
-
-# old code
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta(object):
-#         model = User
-#         fields = ['id', 'first_name', 'last_name', 'phone', 'email', 'password']

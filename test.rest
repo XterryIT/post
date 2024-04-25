@@ -2,7 +2,7 @@
 POST http://127.0.0.1:8000/login
 Content-Type: application/json
 
-{"email": "root@gmail.com", "password": "root"}
+{"first_name": "misha", "last_name": "bahs", "phone": "+48949967871" ,"email": "misha@gmail.com", "password": "misha"}
 
 
 ###
@@ -11,7 +11,7 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/register
 Content-Type: application/json
 
-{"first_name": "misha", "last_name": "bahs", "phone": "+48949967871" ,"email": "misha@gmail.com", "password": "misha"}
+{"email": "1misha@gmail.com", "password": "misha"}
 
 
 ###
