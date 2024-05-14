@@ -2,56 +2,60 @@
 from django.db import models
 
 
-
+#paczkomat
 class Boxpackage(models.Model):
     id = models.BigAutoField(primary_key=True)
-    count_container = models.IntegerField()
-    size = models.CharField()
-    location = models.CharField(unique=True)
+    container_count = models.IntegerField(null=True) # liczba cointenerow 
+    location = models.CharField(unique=True, max_length=255) # dlugosc szerokosc 
+    post_index = models.CharField(unique=True, max_length=255, default='00-000') # index pocztowy 
+    description = models.CharField(max_length=255, null=True) # ulica budunek etc.
 
     class Meta:
         db_table = 'Boxpackage'
 
-
+#komorka paczkomatu
 class Container(models.Model):
     id = models.BigAutoField(primary_key=True)
-    number = models.IntegerField(unique=True)
-    capacity = models.CharField()
-    fk_boxpackage = models.ForeignKey(Boxpackage, models.DO_NOTHING, blank=True, null=True)
+    capacity = models.CharField(max_length=255)
+    fk_boxpackage_id = models.ForeignKey(Boxpackage, models.DO_NOTHING, blank=True, null=True)
+    available = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'Container'
 
 class Package(models.Model):
     id = models.BigAutoField(primary_key=True)
-    number = models.IntegerField(unique=True)
     pin = models.IntegerField()
-    status = models.CharField()
+    required_capacity = models.CharField(max_length=255, null=True) # to samo co capacity w kontenerie w paczkomacie
+    status = models.CharField(max_length=255)
 
     class Meta:
         db_table = 'Package'
 
 
 class Users(models.Model):
-    first_name = models.CharField()
-    last_name = models.CharField()
-    phone = models.CharField(unique=True)
-    email = models.CharField(unique=True)
-    password = models.CharField()
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    phone = models.CharField(unique=True, max_length=20)
+    email = models.CharField(unique=True, max_length=255)
+    password = models.CharField(max_length=255)
 
-    class Meta:
+    class Meta: 
         db_table = 'Users'
 
 
-class Delivery(models.Model):
-    fk_package_number = models.OneToOneField('Package', models.DO_NOTHING, db_column='fk_package_number', blank=True, null=True)
-    fk_from_container_num = models.ForeignKey(Container, models.DO_NOTHING, db_column='fk_from_container_num', to_field='number', blank=True, null=True)
-    fk_to_container_num = models.ForeignKey(Container, models.DO_NOTHING, db_column='fk_to_container_num', to_field='number', related_name='delivery_fk_to_container_num_set', blank=True, null=True)
-    fk_from_boxpackage_location = models.ForeignKey(Boxpackage, models.DO_NOTHING, db_column='fk_from_boxpackage_location', to_field='location', blank=True, null=True)
-    fk_to_boxpackage_location = models.ForeignKey(Boxpackage, models.DO_NOTHING, db_column='fk_to_boxpackage_location', to_field='location', related_name='delivery_fk_to_boxpackage_location_set', blank=True, null=True)
-    fk_users = models.ForeignKey('Users', models.DO_NOTHING, blank=True, null=True)
-    data_departure = models.DateTimeField()
-    data_receiving = models.DateTimeField()
 
+#zmienic calosc 
+class Delivery(models.Model):
+    fk_package = models.OneToOneField(Package, models.DO_NOTHING, db_column='fk_package_id', blank=True, null=True)
+    fk_from_boxpackage = models.ForeignKey(Boxpackage, models.DO_NOTHING, db_column='fk_from_boxpackage_id', blank=True, null=True)
+    fk_to_boxpackage = models.ForeignKey(Boxpackage, models.DO_NOTHING, db_column='fk_to_boxpackage_id', related_name='delivery_fk_to_boxpackage_set', blank=True, null=True)
+    departure_date = models.DateTimeField(auto_now_add=True)  # Automatically set to the current time when the delivery is created
+    arrival_date = models.DateTimeField()  # +2 days from departure_date
+    pickup_date = models.DateTimeField(null=True)  # changes when user makes POST on /api/delivery/receive to get package
+    from_user = models.ForeignKey(Users, models.DO_NOTHING, db_column='from_user_id', blank=True, null=True)
+    to_user_phone = models.ForeignKey(Users, models.DO_NOTHING, db_column='to_user_phone', to_field='phone', related_name='user_phone_deliveries', blank=True, null=True)
+    to_user_email = models.ForeignKey(Users, models.DO_NOTHING, db_column='to_user_email', to_field='email', related_name='user_email_deliveries', blank=True, null=True)
+    
     class Meta:
         db_table = 'Delivery'
