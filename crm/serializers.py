@@ -1,9 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from .models import Users
-import jwt, datetime
-
-# new code 
 
 # Conversion lines to json format lines
 class UsersSerializer(serializers.ModelSerializer):

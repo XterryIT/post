@@ -4,8 +4,8 @@ from rest_framework.exceptions import AuthenticationFailed
 from .serializers import UsersSerializer
 from .models import Users
 from django.contrib.auth.hashers import check_password
-from datetime import timezone
-import jwt, datetime
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+
 
 
 
@@ -16,9 +16,16 @@ class Register(APIView):
 
         serializer = UsersSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        users = serializer.save()
 
-        return Response(serializer.data)
+        access_token = AccessToken.for_user(users)
+        refresh_token = RefreshToken.for_user(users)
+
+
+        return Response({
+            'access_token': str(access_token),
+            'refresh_token': str(refresh_token)
+        })
 
 
 class Login(APIView):
@@ -33,9 +40,15 @@ class Login(APIView):
         
         if not check_password(password, users.password):
             raise AuthenticationFailed('Incorect password')
+        
+        access_token = AccessToken.for_user(users)
+        refresh_token = RefreshToken.for_user(users)
 
         
-        return Response({'message': 'success'})
+        return Response({
+            'access_token': str(access_token),
+            'refresh_token': str(refresh_token)
+        })
 
         
 
