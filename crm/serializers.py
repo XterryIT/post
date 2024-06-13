@@ -6,14 +6,16 @@ from .models import Users
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['first_name', 'last_name', 'phone', 'email', 'password']
+        fields = ['first_name', 'last_name', 'phone', 'email', 'password', 'is_register']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True},
+            'is_register': {'default': True}
         }
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
         instance = self.Meta.model(**validated_data)
+        instance.is_register = True
         if password is not None:
             instance.password = make_password(password)
         instance.save()
