@@ -1,5 +1,5 @@
 from django.db import models
-
+from crm.models import Users
 
 #paczkomat
 class Boxpackage(models.Model):
@@ -27,6 +27,7 @@ class Package(models.Model):
     pin = models.IntegerField()
     required_capacity = models.CharField(max_length=255, null=True) # to samo co capacity w kontenerie w paczkomacie
     status = models.CharField(max_length=255)
+    container = models.ForeignKey(Container, on_delete=models.DO_NOTHING, related_name='packages', null=True, blank=True)
 
     class Meta:
         db_table = 'Package'
@@ -40,11 +41,10 @@ class Delivery(models.Model):
     fk_to_boxpackage = models.ForeignKey(Boxpackage, models.DO_NOTHING, db_column='fk_to_boxpackage_id', related_name='delivery_fk_to_boxpackage_set', blank=True, null=True)
     departure_date = models.DateTimeField(auto_now_add=True)  # Automatically set to the current time when the delivery is created
     arrival_date = models.DateTimeField()  # +2 days from departure_date
-    pickup_date = models.DateTimeField(null=True)  # changes when user makes POST on /api/delivery/receive to get package
     from_user = models.ForeignKey(Users, models.DO_NOTHING, db_column='from_user_id', blank=True, null=True)
-    to_user_phone = models.ForeignKey(Users, models.DO_NOTHING, db_column='to_user_phone', to_field='phone', related_name='user_phone_deliveries', blank=True, null=True)
-    to_user_email = models.ForeignKey(Users, models.DO_NOTHING, db_column='to_user_email', to_field='email', related_name='user_email_deliveries', blank=True, null=True)
-    size_package = models.CharField(max_length=255, null=True)
+    to_user_phone = models.CharField(max_length=255,null=True)
+    to_user_email = models.CharField(max_length=255,null=True)
+    size_package = models.CharField(max_length=255)
 
     class Meta:
         db_table = 'Delivery'

@@ -1,55 +1,42 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
-from .serializers import UsersSerializer
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.hashers import make_password, check_password
 from .models import Users
-from django.contrib.auth.hashers import check_password
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-
-
-
-
+from .serializers import UsersSerializer
 
 class Register(APIView):
+    permission_classes = []  # Удалить классы аутентификации и разрешений
 
     def post(self, request):
-
         serializer = UsersSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        users = serializer.save()
+        user = serializer.save()
+        user.password = make_password(user.password)
+        user.save()
 
-        access_token = AccessToken.for_user(users)
-        refresh_token = RefreshToken.for_user(users)
-
+        refresh = RefreshToken.for_user(user)
 
         return Response({
-            'access_token': str(access_token),
-            'refresh_token': str(refresh_token)
-        })
-
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_201_CREATED)
 
 class Login(APIView):
+    permission_classes = []  # Удалить классы аутентификации и разрешений
+
     def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = Users.objects.filter(email=email).first()
 
-        users = Users.objects.filter(email= email).first()
+        if user is None or not check_password(password, user.password):
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        if users is None:
-            raise AuthenticationFailed('User not found')
-        
-        if not check_password(password, users.password):
-            raise AuthenticationFailed('Incorect password')
-        
-        access_token = AccessToken.for_user(users)
-        refresh_token = RefreshToken.for_user(users)
+        refresh = RefreshToken.for_user(user)
 
-        
         return Response({
-            'access_token': str(access_token),
-            'refresh_token': str(refresh_token)
-        })
-
-        
-
-
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)

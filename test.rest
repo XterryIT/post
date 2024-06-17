@@ -5,13 +5,13 @@ Content-Type: application/json
 {"first_name": "misha", "last_name": "bahs", "phone": "+48949967871" ,"email": "misha@gmail.com", "password": "misha"}
 
 
-###
+
 
 
 POST http://127.0.0.1:8000/register
 Content-Type: application/json
 
-{"email": "1misha@gmail.com", "password": "misha"}
+{"email": "andrii@gmail.com", "password": "a"}
 
 
 ###
@@ -20,5 +20,11 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/test_token
 Content-Type: application/json
 
-{}
+{"to_user_phone": "", "to_user_email": "", "size_package": "", "from_boxpackage": "", "to_boxpackage": ""}
 
+{"to_user_phone": "1234567890",
+ "to_user_email": "root@gmail.com", 
+ "size_package": "L", 
+ "from_boxpackage": "1", 
+ "to_boxpackage": "2"
+}
